@@ -237,3 +237,47 @@ E, para aplicar as alterações, rodamos o latest de novo:
 ```sh
     $ npm run knex migrate:latest
 ```
+
+## Realizando Queries com o Knex:
+
+Realizando as operações CRUD padrão com o knex:
+
+Primeiro vamos fazer um **INSERT** de uma instância na tabela de transações, usando a mesma rota hello:
+
+```js
+    app.get('/hello', async () => {
+        const newTransaction = await knex('transactions').insert({
+            id: crypto.randomUUID(),
+            title: 'Nova Transacao',
+            amount: 1000
+        }).returning('*');
+
+        return newTransaction;
+    })
+```
+
+Bastante direto, simplesmente passamos os dados da nova instancia pra dentro do método INSERT e pedimos para ele retornar todos os dados dessa query.
+
+Podemos também fazer uma busca, ou um **SELECT**:
+
+```js
+    app.get('/hello', async () => {
+        const transactions = await knex('transactions').select('*');
+
+        return transactions;
+    })
+```
+
+E claro, inserir cláusulas nessa busca:
+
+```js
+    app.get('/hello', async () => {
+
+        const transactions = await knex('transactions')
+            .where('amount', 1000)
+            .select('*');
+
+        return transactions;
+    })
+```
+
